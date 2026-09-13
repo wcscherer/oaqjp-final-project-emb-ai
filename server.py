@@ -13,7 +13,7 @@ def sent_detector():
     For the given statement, the system response is
     'anger': {response['anger']}, 'disgust': {response['disgust']},
     'fear': {response['fear']}, 'joy': {response['joy']}, and
-    'sadness: {response['sadness']}. The dominant emotion is \033[1m{response['dominant_emotion']}\033[03m]
+    'sadness: {response['sadness']}. The dominant emotion is {response['dominant_emotion']}.
     """
 
     return message
