@@ -8,21 +8,38 @@ def emotion_detector(text_to_analyze):
 
     response = requests.post(url, json = input_json, headers=headers)
 
-    resp_json = json.loads(response.text)
-    emotions = resp_json['emotionPredictions'][0]['emotion']
+    if response.status_code == 400:
+        anger_score = None
+        disgust_score = None
+        fear_score = None
+        joy_score = None
+        sadness_score = None
+        dominant_emotion = None
+    
+    else:
+        resp_json = json.loads(response.text)
+        emotions = resp_json['emotionPredictions'][0]['emotion']
 
-    anger_score   = float(emotions['anger'])
-    disgust_score = float(emotions['disgust'])
-    fear_score    = float(emotions['fear'])
-    joy_score     = float(emotions['joy'])
-    sadness_score = float(emotions['sadness'])
+        anger_score   = float(emotions['anger'])
+        disgust_score = float(emotions['disgust'])
+        fear_score    = float(emotions['fear'])
+        joy_score     = float(emotions['joy'])
+        sadness_score = float(emotions['sadness'])
+            
+        # Find dominant emotion sentiment
+        max_score = float(-1e6)
+        dominant_emotion  = 'None'
+        for key, val in emotions.items():
+            if float(val) >= max_score:
+                max_score = float(val)
+                dominant_emotion = key
 
-    # Find dominant emotion sentiment
-    max_score = float(-1e6)
-    dominant_emotion  = 'None'
-    for key, val in emotions.items():
-        if float(val) >= max_score:
-            max_score = float(val)
-            dominant_emotion = key
+    return_dict = {'anger':anger_score, 
+                   'disgust':disgust_score, 
+                   'fear':fear_score, 
+                   'joy':joy_score, 
+                   'sadness':sadness_score,
+                   'dominant_emotion':dominant_emotion,
+                   }
 
-    return {'anger':anger_score, 'disgust':disgust_score, 'fear':fear_score, 'joy':joy_score, 'sadness':sadness_score, 'dominant_emotion':dominant_emotion}
+    return return_dict
